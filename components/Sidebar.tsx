@@ -2,6 +2,7 @@
 import { cn } from "@/lib/utils";
 import { UserButton } from "@clerk/nextjs";
 import React, { useState } from "react";
+import Link from "next/link";
 
 const Sidebar = () => {
     const [isOpen, setIsOpen] = useState(true);
@@ -21,10 +22,10 @@ const Sidebar = () => {
             )}
         >
             <div className="bg-slate-50 h-full">
-                <div className="flex gap-3 items-center mx-5 mt-4">
+                <div className="mt-6 mx-5">
                     <ul className="grid flex-1 grid-cols-3 text-sm bg-slate-200 *:py-2  *:text-center rounded-full overflow-hidden">
                         <li className="cursor-pointer">All</li>
-                        <li className="cursor-pointer">Friends</li>
+                        <li className="cursor-pointer">Chats</li>
                         <li className="cursor-pointer">Groups</li>
                     </ul>
 
