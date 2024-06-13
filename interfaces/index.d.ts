@@ -4,7 +4,7 @@ namespace models {
         id: string;
         linked_to: Array;
         object: string;
-        verification: Verification;
+        verification: Verification | null;
     }
 
     interface Verification {

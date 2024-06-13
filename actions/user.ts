@@ -1,4 +1,4 @@
-"user server";
+"use server";
 
 import { connectToDB } from "@/lib/mongoose";
 import User from "@/models";
@@ -8,14 +8,14 @@ export const createorUpdateUser = async ({
     first_name,
     last_name,
     image_url,
-    email_adresses,
+    email_addresses,
     username,
 }: {
     id: string;
     first_name: string;
     last_name: string;
     image_url: string;
-    email_adresses: models.EmailAdress[];
+    email_addresses: models.EmailAdress[];
     username: string;
 }) => {
     connectToDB();
@@ -29,7 +29,7 @@ export const createorUpdateUser = async ({
                     firstName: first_name,
                     lastName: last_name,
                     userName: username,
-                    email: email_adresses[0].email_address,
+                    email: email_addresses[0].email_address,
                     profilePicture: image_url,
                 },
             },
