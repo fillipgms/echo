@@ -7,15 +7,16 @@ export async function POST(req: Request) {
 
     if (!WEBHOOK_SECRET) {
         console.error("WEBHOOK_SECRET não está definido");
-        throw new Error(
-            "Please add WEBHOOK_SECRET from Clerk Dashboard to .env or .env.local"
-        );
+        return new Response("WEBHOOK_SECRET não está definido", {
+            status: 500,
+        });
     }
 
+    // Obtenha os cabeçalhos
     const headerPayload = headers();
     const svix_id = headerPayload.get("svix-id");
     const svix_timestamp = headerPayload.get("svix-timestamp");
-    let svix_signature = headerPayload.get("svix-signature");
+    const svix_signature = headerPayload.get("svix-signature");
 
     console.log("Cabeçalhos recebidos:", {
         svix_id,
@@ -25,25 +26,23 @@ export async function POST(req: Request) {
 
     if (!svix_id || !svix_timestamp || !svix_signature) {
         console.error("Faltando cabeçalhos svix");
-        return new Response("Error occured -- no svix headers", {
-            status: 400,
-        });
+        return new Response("Faltando cabeçalhos svix", { status: 400 });
     }
 
-    // Ajuste o padding do svix_signature se necessário
-    const padding = 4 - (svix_signature.length % 4);
-    if (padding !== 4) {
-        svix_signature += "=".repeat(padding);
+    let payload;
+    try {
+        payload = await req.json();
+    } catch (err) {
+        console.error("Erro ao ler o payload:", err);
+        return new Response("Erro ao ler o payload", { status: 400 });
     }
 
-    const payload = await req.json();
     const body = JSON.stringify(payload);
     console.log("Payload recebido:", body);
 
     const wh = new Webhook(WEBHOOK_SECRET);
 
-    let evt: WebhookEvent;
-
+    let evt;
     try {
         evt = wh.verify(body, {
             "svix-id": svix_id,
@@ -53,15 +52,14 @@ export async function POST(req: Request) {
         console.log("Payload verificado com sucesso:", evt);
     } catch (err) {
         console.error("Erro ao verificar webhook:", err);
-        return new Response("Error occured", {
-            status: 400,
-        });
+        return new Response("Erro ao verificar webhook", { status: 400 });
     }
 
+    // Processar o payload
     const { id } = evt.data;
     const eventType = evt.type;
     console.log(`Webhook com ID de ${id} e tipo ${eventType}`);
     console.log("Corpo do webhook:", body);
 
-    return new Response("", { status: 200 });
+    return new Response("Webhook processado com sucesso", { status: 200 });
 }
