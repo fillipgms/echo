@@ -1,34 +1,34 @@
 import mongoose from "mongoose";
 
-const UserSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
     clerkId: {
-        type: string,
+        type: String,
         required: true,
         unique: true,
     },
 
     firstName: {
-        type: string,
+        type: String,
         required: true,
     },
 
     lastName: {
-        type: string,
+        type: String,
         required: true,
     },
 
     userName: {
-        type: string,
+        type: String,
         required: true,
     },
 
     email: {
-        type: string,
+        type: String,
         required: true,
     },
 
     profilePicture: {
-        type: string,
+        type: String,
         required: true,
     },
 
@@ -53,6 +53,6 @@ const UserSchema = new mongoose.Schema({
     },
 });
 
-const User = mongoose.model.User || mongoose.model("User", UserSchema);
+const User = mongoose.models.User || mongoose.model("User", userSchema);
 
 export default User;

@@ -1,7 +1,7 @@
 "use server";
 
 import { connectToDB } from "@/lib/mongoose";
-import User from "@/models";
+import User from "@/models/user.model";
 
 export const createorUpdateUser = async ({
     id,
@@ -18,9 +18,8 @@ export const createorUpdateUser = async ({
     email_addresses: models.EmailAdress[];
     username: string;
 }) => {
-    connectToDB();
-
     try {
+        connectToDB();
         const user = await User.findOneAndUpdate(
             { clerkId: id },
             {
@@ -39,7 +38,7 @@ export const createorUpdateUser = async ({
         await user.save();
         return user;
     } catch (error) {
-        console.log("error");
+        console.log(error);
     }
 };
 
