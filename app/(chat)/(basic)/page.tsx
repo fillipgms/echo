@@ -1,3 +1,3 @@
 export default function Home() {
-    return <section>oiii</section>;
+    return <section>Online Friends</section>;
 }
