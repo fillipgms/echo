@@ -11,7 +11,7 @@ export const createOrUpdateUser = async (
 ) => {
     console.log("chegou a rodar a função Create Or Update User");
     try {
-        connectToDB();
+        await connectToDB();
         console.log("chegou a rodar a função Connect To DB");
         const user = await User.findOneAndUpdate(
             { clerkId: id },
