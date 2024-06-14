@@ -49,7 +49,7 @@ export async function POST(request: Request) {
     } catch (err) {
         console.error("Error instantiating Webhook:", err);
         return new Response("Error occurred during Webhook instantiation", {
-            status: 700,
+            status: 599,
         });
     }
 
