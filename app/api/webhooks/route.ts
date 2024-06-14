@@ -49,10 +49,57 @@ export async function POST(req: Request) {
         });
     }
 
-    const { id } = evt.data;
-    const eventType = evt.type;
-    console.log(`Webhook with and ID of ${id} and type of ${eventType}`);
-    console.log("Webhook body:", body);
+    const eventType = evt?.type;
+    if (eventType === "user.created" || eventType === "user.updated") {
+        const {
+            id,
+            first_name,
+            last_name,
+            image_url,
+            email_addresses,
+            username,
+        } = evt?.data;
 
-    return new Response("", { status: 200 });
+        if (
+            !id ||
+            !first_name ||
+            !last_name ||
+            !image_url ||
+            !email_addresses ||
+            !username
+        )
+            return new Response(
+                "houve um erro ao encontrar as propriedades do usuário",
+                { status: 500 }
+            );
+
+        try {
+            await createOrUpdateUser(
+                id,
+                first_name,
+                last_name,
+                image_url,
+                email_addresses,
+                username
+            );
+
+            return new Response("user is created or updated", { status: 200 });
+        } catch (error) {
+            console.log("ERROR: " + error);
+            return new Response("error", { status: 500 });
+        }
+    }
+
+    if (eventType === "user.deleted") {
+        try {
+            const { id } = evt?.data;
+            if (!id) return;
+
+            await deleteUser(id);
+            return new Response("user is deleted", { status: 200 });
+        } catch (error) {
+            console.log("ERROR: " + error);
+            return new Response("error", { status: 500 });
+        }
+    }
 }
