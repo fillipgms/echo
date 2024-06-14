@@ -8,6 +8,8 @@ export async function POST(request: Request) {
         return new Response(`No webhook`, { status: 300 });
     }
 
+    console.log("WEBHOOK SECRET IS: ", WEBHOOK_SECRET);
+
     const payload = await request.json();
     const header = headers();
 
@@ -39,10 +41,17 @@ export async function POST(request: Request) {
     }
 
     let evnt;
+    let wh: Webhook;
 
-    const wh = new Webhook(WEBHOOK_SECRET);
-
-    console.log("WEBHOOK IS:", wh);
+    try {
+        wh = new Webhook(WEBHOOK_SECRET);
+        console.log("Webhook instance created successfully");
+    } catch (err) {
+        console.error("Error instantiating Webhook:", err);
+        return new Response("Error occurred during Webhook instantiation", {
+            status: 700,
+        });
+    }
 
     return new Response(`tudo certo até agora`, { status: 200 });
 }
