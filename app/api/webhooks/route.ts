@@ -4,9 +4,12 @@ import { headers } from "next/headers";
 import { WebhookEvent } from "@clerk/nextjs/server";
 
 export async function POST(req: Request) {
+    console.log("Received POST request at /api/webhooks");
+
     const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
 
     if (!WEBHOOK_SECRET) {
+        console.error("WEBHOOK_SECRET is not defined");
         throw new Error(
             "Please add WEBHOOK_SECRET from Clerk Dashboard to .env or .env.local"
         );
@@ -20,15 +23,23 @@ export async function POST(req: Request) {
 
     // If there are no headers, error out
     if (!svix_id || !svix_timestamp || !svix_signature) {
+        console.error("Missing svix headers");
         return new Response("Error occurred -- no svix headers", {
             status: 400,
         });
     }
 
+    console.log("Svix headers received:", {
+        svix_id,
+        svix_timestamp,
+        svix_signature,
+    });
+
     // Get the body
     let payload: any;
     try {
         payload = await req.json();
+        console.log("Payload received:", payload);
     } catch (err) {
         console.error("Error parsing JSON body:", err);
         return new Response("Error parsing JSON body", {
@@ -49,6 +60,7 @@ export async function POST(req: Request) {
             "svix-timestamp": svix_timestamp,
             "svix-signature": svix_signature,
         }) as WebhookEvent;
+        console.log("Webhook verified successfully:", evt);
     } catch (err) {
         console.error("Error verifying webhook:", err);
         return new Response("Error occurred during webhook verification", {
