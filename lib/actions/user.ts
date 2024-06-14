@@ -1,3 +1,4 @@
+"use server";
 import { connectToDB } from "@/lib/mongoose";
 import User from "@/lib/models/user.model";
 
@@ -9,10 +10,8 @@ export const createOrUpdateUser = async (
     email_addresses: models.EmailAdress[],
     username: string
 ) => {
-    console.log("chegou a rodar a função Create Or Update User");
     try {
         await connectToDB();
-        console.log("chegou a rodar a função Connect To DB");
         const user = await User.findOneAndUpdate(
             { clerkId: id },
             {
@@ -29,7 +28,7 @@ export const createOrUpdateUser = async (
         );
 
         await user.save();
-        console.log("chegou a salvar o usuário");
+
         return user;
     } catch (error) {
         console.log(error);
@@ -40,6 +39,16 @@ export const deleteUser = async (id: string) => {
     try {
         await connectToDB();
         await User.findOneAndDelete({ clerkId: id });
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+export const getUserByUsername = async (username: string) => {
+    try {
+        await connectToDB();
+        const user = await User.findOne({ userName: username });
+        return user;
     } catch (error) {
         console.log(error);
     }

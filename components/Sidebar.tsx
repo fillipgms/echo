@@ -2,7 +2,7 @@
 import { cn } from "@/lib/utils";
 import { UserButton } from "@clerk/nextjs";
 import React, { useState } from "react";
-import Link from "next/link";
+import User from "./User";
 
 const Sidebar = () => {
     const [isOpen, setIsOpen] = useState(true);
@@ -29,31 +29,14 @@ const Sidebar = () => {
                         <li className="cursor-pointer">Groups</li>
                     </ul>
 
-                    <div className="flex md:hidden">
-                        <button className="space-y-1" onClick={handleClick}>
-                            <span
-                                className={cn(
-                                    lineStyle,
-                                    isOpen
-                                        ? "rotate-45 translate-y-2"
-                                        : "-translate-y-0.5"
-                                )}
-                            ></span>
-                            <span
-                                className={cn(
-                                    lineStyle,
-                                    isOpen ? "opacity-0" : "opacity-100"
-                                )}
-                            ></span>
-                            <span
-                                className={cn(
-                                    lineStyle,
-                                    isOpen
-                                        ? "-rotate-45 -translate-y-2"
-                                        : "translate-y-0.5"
-                                )}
-                            ></span>
-                        </button>
+                    <div className="mt-5 space-y-3">
+                        {[...Array(5)].map((_, i) => (
+                            <User
+                                key={i}
+                                onClick={handleClick}
+                                className="cursor-pointer"
+                            />
+                        ))}
                     </div>
                 </div>
             </div>
