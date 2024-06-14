@@ -1,65 +1,98 @@
-import { Webhook } from "svix";
+/* eslint-disable camelcase */
+// Resource: https://clerk.com/docs/users/sync-data-to-your-backend
+// Above article shows why we need webhooks i.e., to sync data to our backend
+
+// Resource: https://docs.svix.com/receiving/verifying-payloads/why
+// It's a good practice to verify webhooks. Above article shows why we should do it
+import { Webhook, WebhookRequiredHeaders } from "svix";
 import { headers } from "next/headers";
-import { WebhookEvent } from "@clerk/nextjs/server";
 
-export async function POST(req: Request) {
-    const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
+import { IncomingHttpHeaders } from "http";
 
-    if (!WEBHOOK_SECRET) {
-        console.error("WEBHOOK_SECRET não está definido");
-        return new Response("WEBHOOK_SECRET não está definido", {
-            status: 500,
+import { NextResponse } from "next/server";
+import { createOrUpdateUser, deleteUser } from "@/actions/user";
+
+// Resource: https://clerk.com/docs/integration/webhooks#supported-events
+// Above document lists the supported events
+type EventType = "user.created" | "user.updated" | "user.deleted";
+
+export const POST = async (request: Request) => {
+    const payload = await request.json();
+    const header = headers();
+
+    const svix_id = header.get("svix-id");
+    const svix_timestamp = header.get("svix-timestamp");
+    const svix_signature = header.get("svix-signature");
+
+    if (!svix_id || !svix_timestamp || !svix_signature) {
+        return new Response("Error occured -- no svix headers", {
+            status: 400,
         });
     }
 
-    // Obtenha os cabeçalhos
-    const headerPayload = headers();
-    const svix_id = headerPayload.get("svix-id");
-    const svix_timestamp = headerPayload.get("svix-timestamp");
-    const svix_signature = headerPayload.get("svix-signature");
+    const wh = new Webhook(process.env.NEXT_CLERK_WEBHOOK_SECRET || "");
 
-    console.log("Cabeçalhos recebidos:", {
-        svix_id,
-        svix_timestamp,
-        svix_signature,
-    });
+    let evt: any = {};
 
-    if (!svix_id || !svix_timestamp || !svix_signature) {
-        console.error("Faltando cabeçalhos svix");
-        return new Response("Faltando cabeçalhos svix", { status: 400 });
-    }
-
-    let payload;
     try {
-        payload = await req.json();
-    } catch (err) {
-        console.error("Erro ao ler o payload:", err);
-        return new Response("Erro ao ler o payload", { status: 400 });
-    }
-
-    const body = JSON.stringify(payload);
-    console.log("Payload recebido:", body);
-
-    const wh = new Webhook(WEBHOOK_SECRET);
-
-    let evt;
-    try {
-        evt = wh.verify(body, {
+        evt = wh.verify(JSON.stringify(payload), {
             "svix-id": svix_id,
             "svix-timestamp": svix_timestamp,
             "svix-signature": svix_signature,
-        }) as WebhookEvent;
-        console.log("Payload verificado com sucesso:", evt);
+        });
     } catch (err) {
-        console.error("Erro ao verificar webhook:", err);
-        return new Response("Erro ao verificar webhook", { status: 400 });
+        console.error("Error verifying webhook:", err);
+        return new Response("Error occured", {
+            status: 400,
+        });
     }
 
-    // Processar o payload
-    const { id } = evt.data;
-    const eventType = evt.type;
-    console.log(`Webhook com ID de ${id} e tipo ${eventType}`);
-    console.log("Corpo do webhook:", body);
+    const eventType = evt?.type;
 
-    return new Response("Webhook processado com sucesso", { status: 200 });
-}
+    if (eventType === "user.created" || eventType === "user.updated") {
+        const {
+            id,
+            first_name,
+            last_name,
+            image_url,
+            email_addresses,
+            username,
+        } = evt?.data;
+
+        try {
+            await createOrUpdateUser(
+                id,
+                first_name,
+                last_name,
+                image_url,
+                email_addresses,
+                username
+            );
+
+            return new Response("User is created or updated", {
+                status: 200,
+            });
+        } catch (err) {
+            console.error("Error creating or updating user:", err);
+            return new Response("Error occured", {
+                status: 500,
+            });
+        }
+    }
+
+    if (eventType === "user.deleted") {
+        try {
+            const { id } = evt?.data;
+            await deleteUser(id);
+
+            return new Response("User is deleted", {
+                status: 200,
+            });
+        } catch (err) {
+            console.error("Error deleting user:", err);
+            return new Response("Error occured", {
+                status: 500,
+            });
+        }
+    }
+};
