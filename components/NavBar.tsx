@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-const navLinks = ["online", "everyone", "blocked", "add friend"];
+const navLinks = ["online", "everyone", "blocked", "add friends"];
 
 const NavBar = () => {
     const pathName = usePathname();

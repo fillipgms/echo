@@ -4,6 +4,7 @@ import React from "react";
 
 interface UserComponentProps {
     displayName?: boolean;
+    displayUsername?: boolean;
     isMessage?: boolean;
     onClick?: () => void;
     className?: string;
@@ -12,7 +13,8 @@ interface UserComponentProps {
 
 const User = ({
     displayName = true,
-    isMessage = false,
+    displayUsername,
+    isMessage,
     onClick,
     className,
     user,
@@ -31,9 +33,14 @@ const User = ({
                 />
             </div>
             <div>
-                {displayName && (
-                    <span className="text-sm font-medium">{`${user.firstName} ${user.lastName}`}</span>
-                )}
+                <div className="flex flex-col">
+                    {displayName && (
+                        <span className="text-sm font-medium">{`${user.firstName} ${user.lastName}`}</span>
+                    )}
+                    {displayUsername && (
+                        <span className="text-xs">@{user.userName}</span>
+                    )}
+                </div>
                 {isMessage && (
                     <div>
                         <p>

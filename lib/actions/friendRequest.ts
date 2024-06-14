@@ -48,9 +48,26 @@ export const getFriendRequestsByUserId = async (id: string) => {
 
         if (!user) return console.log("usuário não encontrado");
 
-        const requests = await FriendRequest.find({ fromUserId: user.id })
-            .populate("fromUserId", "firstName lastName profilePicture")
-            .populate("toUserId", "firstName lastName profilePicture");
+        const requests = await FriendRequest.find({
+            fromUserId: user.id,
+        }).populate("toUserId", "firstName lastName profilePicture userName");
+        return requests;
+    } catch (error) {
+        console.error("Erro ao buscar solicitações de amizade:", error);
+        throw error;
+    }
+};
+
+export const getReceivedFriendRequestsByUserId = async (id: string) => {
+    try {
+        await connectToDB();
+        const user = await User.findOne({ clerkId: id });
+
+        if (!user) return console.log("usuário não encontrado");
+
+        const requests = await FriendRequest.find({
+            toUserId: user.id,
+        }).populate("fromUserId", "firstName lastName profilePicture userName");
         return requests;
     } catch (error) {
         console.error("Erro ao buscar solicitações de amizade:", error);

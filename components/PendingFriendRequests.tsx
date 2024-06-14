@@ -10,14 +10,23 @@ const PendingFriendRequests = async () => {
     const allRequestsSent = await getFriendRequestsByUserId(user.id);
 
     if (!allRequestsSent) {
-        return <div>vc nn enviou nenhum pedido aidna</div>;
+        return (
+            <div>
+                <h3 className="text-md font-semibold">Pending - 0</h3>
+            </div>
+        );
     }
 
     return (
-        <div className="mt-3 pl-5 overflow-y-scroll">
-            {allRequestsSent.map((request) => (
-                <User user={request.toUserId[0]} />
-            ))}
+        <div>
+            <h3 className="text-md font-semibold">
+                Pending - {allRequestsSent.length}
+            </h3>
+            <div className="mt-3 pl-5 overflow-y-scroll">
+                {allRequestsSent.map((request) => (
+                    <User user={request.toUserId[0]} displayUsername />
+                ))}
+            </div>
         </div>
     );
 };
