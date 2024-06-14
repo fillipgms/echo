@@ -15,9 +15,14 @@ import { Input } from "@/components/ui/input";
 import { Button } from "./ui/button";
 import { useAuth } from "@clerk/nextjs";
 import { addFriendRequestByUsername } from "@/lib/actions/friendRequest";
+import FormSucces from "./FormSucess";
+import FormError from "./FormError";
 
 const AddFriendForm = () => {
     const { isLoaded, userId, sessionId, getToken } = useAuth();
+
+    const [error, setError] = useState<string | undefined>("");
+    const [success, setSuccess] = useState<string | undefined>("");
 
     if (!isLoaded || !userId) {
         return;
@@ -39,7 +44,8 @@ const AddFriendForm = () => {
     const onSubmit = (values: z.infer<typeof formSchema>) => {
         startTransition(() => {
             addFriendRequestByUsername(userId, values.username).then((data) => {
-                console.log(data);
+                setError(data.error);
+                setSuccess(data.success);
 
                 if (!data.error) {
                     form.reset();
@@ -70,6 +76,8 @@ const AddFriendForm = () => {
                                     </Button>
                                 </div>
                             </FormControl>
+                            <FormSucces message={success} />
+                            <FormError message={error} />
                             <FormMessage />
                         </FormItem>
                     )}

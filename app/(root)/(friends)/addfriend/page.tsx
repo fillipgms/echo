@@ -1,5 +1,6 @@
 import AddFriendForm from "@/components/AddFriendForm";
-import React from "react";
+import PendingFriendRequests from "@/components/PendingFriendRequests";
+import React, { Suspense } from "react";
 
 const AddFriendPage = () => {
     const count = 2;
@@ -14,7 +15,10 @@ const AddFriendPage = () => {
                 <AddFriendForm />
             </div>
             <div>
-                <h3>Pending - {count}</h3>
+                <h3>Pending </h3>
+                <Suspense fallback="loading">
+                    <PendingFriendRequests />
+                </Suspense>
             </div>
         </section>
     );

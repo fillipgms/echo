@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 import React from "react";
 
 interface UserComponentProps {
@@ -6,6 +7,7 @@ interface UserComponentProps {
     isMessage?: boolean;
     onClick?: () => void;
     className?: string;
+    user: models.User;
 }
 
 const User = ({
@@ -13,16 +15,24 @@ const User = ({
     isMessage = false,
     onClick,
     className,
+    user,
 }: UserComponentProps) => {
     return (
         <div
             className={cn(className, "flex items-center gap-2")}
             onClick={onClick}
         >
-            <div className=" size-10 bg-red-500 rounded-full"></div>
+            <div className=" size-10 rounded-full overflow-hidden">
+                <Image
+                    src={user.profilePicture}
+                    alt={`${user.firstName} profile pic`}
+                    height={40}
+                    width={40}
+                />
+            </div>
             <div>
                 {displayName && (
-                    <span className="text-sm font-medium">User test</span>
+                    <span className="text-sm font-medium">{`${user.firstName} ${user.lastName}`}</span>
                 )}
                 {isMessage && (
                     <div>

@@ -8,7 +8,6 @@ const navLinks = ["online", "everyone", "blocked", "add friend"];
 
 const NavBar = () => {
     const pathName = usePathname();
-    console.log(pathName);
 
     const normalizeText = (text: string) => {
         return text.toLowerCase().replace(" ", "");

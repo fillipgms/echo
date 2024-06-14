@@ -11,4 +11,17 @@ namespace models {
         status: string;
         strategy: string;
     }
+
+    interface User {
+        clerkId: string;
+        firstName: string;
+        lastName: string;
+        userName: string;
+        email: string;
+        profilePicture: string;
+        friends: User[];
+        friendsRequest: User[];
+        Blocked: User[];
+        createdAt: Date;
+    }
 }

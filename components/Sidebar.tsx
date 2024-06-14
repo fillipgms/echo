@@ -29,15 +29,7 @@ const Sidebar = () => {
                         <li className="cursor-pointer">Groups</li>
                     </ul>
 
-                    <div className="mt-5 space-y-3">
-                        {[...Array(5)].map((_, i) => (
-                            <User
-                                key={i}
-                                onClick={handleClick}
-                                className="cursor-pointer"
-                            />
-                        ))}
-                    </div>
+                    <div className="mt-5 space-y-3"></div>
                 </div>
             </div>
             <div className="bg-slate-300 bottom-0 absolute w-full flex items-center py-3 px-4">

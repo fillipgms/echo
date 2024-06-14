@@ -60,8 +60,6 @@ export async function POST(req: Request) {
             username,
         } = evt?.data;
 
-        console.log("entrou no if user create or user updated");
-
         if (
             !id ||
             !first_name ||
@@ -75,8 +73,6 @@ export async function POST(req: Request) {
                 { status: 500 }
             );
 
-        console.log("todas as informações foram recebidas corretamente");
-
         try {
             await createOrUpdateUser(
                 id,
@@ -87,11 +83,8 @@ export async function POST(req: Request) {
                 username
             );
 
-            console.log("a função create Or Update User acabou");
-
             return new Response("user is created or updated", { status: 200 });
         } catch (error) {
-            console.log("ERROR: " + error);
             return new Response("error", { status: 500 });
         }
     }
@@ -104,7 +97,6 @@ export async function POST(req: Request) {
             await deleteUser(id);
             return new Response("user is deleted", { status: 200 });
         } catch (error) {
-            console.log("ERROR: " + error);
             return new Response("error", { status: 500 });
         }
     }

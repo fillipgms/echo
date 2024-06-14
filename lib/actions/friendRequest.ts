@@ -11,12 +11,12 @@ export const addFriendRequestByUsername = async (
         await connectToDB();
         const requestFrom = await User.findOne({ id: myUserId });
         if (!requestFrom) {
-            throw new Error(`Usuário com ID ${myUserId} não encontrado.`);
+            return { error: `UserId ${myUserId} not found.` };
         }
 
         const requestTo = await User.findOne({ userName: username });
         if (!requestTo) {
-            throw new Error(`Usuário com username ${username} não encontrado.`);
+            return { error: `Username ${username} not found` };
         }
 
         const existingRequest = await FriendRequest.findOne({
@@ -25,7 +25,7 @@ export const addFriendRequestByUsername = async (
         });
 
         if (existingRequest) {
-            return;
+            return { error: `You've already sent a request for this user` };
         }
 
         const newRequest = new FriendRequest({
@@ -35,8 +35,25 @@ export const addFriendRequestByUsername = async (
 
         await newRequest.save();
 
-        return newRequest;
+        return { success: `friend request sent!` };
     } catch (error) {
-        return { error: error };
+        return { error: `error: ${error}` };
+    }
+};
+
+export const getFriendRequestsByUserId = async (id: string) => {
+    try {
+        await connectToDB();
+        const user = await User.findOne({ clerkId: id });
+
+        if (!user) return console.log("usuário não encontrado");
+
+        const requests = await FriendRequest.find({ fromUserId: user.id })
+            .populate("fromUserId", "firstName lastName profilePicture")
+            .populate("toUserId", "firstName lastName profilePicture");
+        return requests;
+    } catch (error) {
+        console.error("Erro ao buscar solicitações de amizade:", error);
+        throw error;
     }
 };
