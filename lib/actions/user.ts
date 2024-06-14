@@ -9,8 +9,10 @@ export const createOrUpdateUser = async (
     email_addresses: models.EmailAdress[],
     username: string
 ) => {
+    console.log("chegou a rodar a função Create Or Update User");
     try {
         connectToDB();
+        console.log("chegou a rodar a função Connect To DB");
         const user = await User.findOneAndUpdate(
             { clerkId: id },
             {
@@ -27,6 +29,7 @@ export const createOrUpdateUser = async (
         );
 
         await user.save();
+        console.log("chegou a salvar o usuário");
         return user;
     } catch (error) {
         console.log(error);
