@@ -48,7 +48,24 @@ export const getUserByUsername = async (username: string) => {
     try {
         await connectToDB();
         const user = await User.findOne({ userName: username });
+
+        if (!user) throw new Error("Usuário não encontrado");
+
         return user;
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+export const getAllFriends = async (clerkId: string) => {
+    try {
+        await connectToDB();
+        const user = await User.findOne({ clerkId: clerkId }).populate(
+            "friends"
+        );
+        if (!user) throw new Error("Usuário não encontrado");
+
+        return JSON.stringify(user.friends);
     } catch (error) {
         console.log(error);
     }

@@ -9,7 +9,7 @@ export const addFriendRequestByUsername = async (
 ) => {
     try {
         await connectToDB();
-        const requestFrom = await User.findOne({ id: myUserId });
+        const requestFrom = await User.findOne({ clerkId: myUserId });
         if (!requestFrom) {
             return { error: `UserId ${myUserId} not found.` };
         }
@@ -19,13 +19,34 @@ export const addFriendRequestByUsername = async (
             return { error: `Username ${username} not found` };
         }
 
+        if (requestFrom.clerkId === requestTo.clerkId) {
+            return { error: `You can't send a friend request to yourself` };
+        }
+
         const existingRequest = await FriendRequest.findOne({
-            fromUserId: requestFrom.id,
-            toUserId: requestTo.id,
+            $or: [
+                { fromUserId: requestFrom.id, toUserId: requestTo.id },
+                { fromUserId: requestTo.id, toUserId: requestFrom.id },
+            ],
         });
 
         if (existingRequest) {
-            return { error: `You've already sent a request for this user` };
+            return {
+                error: `You've already sent or received a request for this user`,
+            };
+        }
+
+        const isAlreadyFriends = await User.findOne({
+            $or: [
+                { _id: requestFrom.id, friends: requestTo },
+                { _id: requestTo.id, friends: requestFrom },
+            ],
+        });
+
+        if (isAlreadyFriends) {
+            return {
+                error: `You are already friends`,
+            };
         }
 
         const newRequest = new FriendRequest({
@@ -41,36 +62,113 @@ export const addFriendRequestByUsername = async (
     }
 };
 
-export const getFriendRequestsByUserId = async (id: string) => {
+export const getReceivedFriendRequestsByUserId = async (userId: string) => {
     try {
         await connectToDB();
-        const user = await User.findOne({ clerkId: id });
 
-        if (!user) return console.log("usuário não encontrado");
+        const userFromDB = await User.findOne({ clerkId: userId });
+        if (!userFromDB) {
+            throw new Error("User not found");
+        }
 
-        const requests = await FriendRequest.find({
-            fromUserId: user.id,
-        }).populate("toUserId", "firstName lastName profilePicture userName");
-        return requests;
+        const receivedRequests = await FriendRequest.find({
+            toUserId: userFromDB._id,
+        })
+            .populate("fromUserId")
+            .populate("toUserId");
+
+        return JSON.stringify(receivedRequests);
     } catch (error) {
-        console.error("Erro ao buscar solicitações de amizade:", error);
+        console.log(error);
         throw error;
     }
 };
 
-export const getReceivedFriendRequestsByUserId = async (id: string) => {
+export const acceptFriendRequest = async (
+    fromUserId: string,
+    toUserId: string
+) => {
     try {
         await connectToDB();
-        const user = await User.findOne({ clerkId: id });
 
-        if (!user) return console.log("usuário não encontrado");
+        const isExistingRequest = await FriendRequest.findOne({
+            fromUserId: fromUserId,
+            toUserId: toUserId,
+        });
 
-        const requests = await FriendRequest.find({
-            toUserId: user.id,
-        }).populate("fromUserId", "firstName lastName profilePicture userName");
-        return requests;
+        if (!isExistingRequest) {
+            throw new Error("request not found");
+        }
+
+        await FriendRequest.deleteOne({
+            fromUserId: fromUserId,
+            toUserId: toUserId,
+        });
+
+        const fromUser = await User.findOne({
+            _id: fromUserId,
+        });
+        const toUser = await User.findOne({
+            _id: toUserId,
+        });
+
+        if (!fromUser || !toUser) {
+            throw new Error("Users not found");
+        }
+
+        toUser.friends.push(fromUser);
+        fromUser.friends.push(toUser);
+
+        await fromUser.save();
+        await toUser.save();
+
+        return { success: true };
     } catch (error) {
-        console.error("Erro ao buscar solicitações de amizade:", error);
+        console.log(error);
+        throw error;
+    }
+};
+
+export const declineFriendRequest = async (
+    fromUserId: string,
+    toUserId: string
+) => {
+    try {
+        await connectToDB();
+
+        const isExistingRequest = await FriendRequest.findOne({
+            fromUserId: fromUserId,
+            toUserId: toUserId,
+        });
+
+        if (!isExistingRequest) {
+            throw new Error("request not found");
+        }
+
+        await FriendRequest.deleteOne({
+            fromUserId: fromUserId,
+            toUserId: toUserId,
+        });
+
+        return { success: true };
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+};
+
+export const getPendingRequestsByClerkId = async (clerkId: string) => {
+    try {
+        await connectToDB();
+
+        const user = await User.findOne({ clerkId: clerkId });
+        const pendingRequests = await FriendRequest.find({
+            fromUserId: user._id,
+        }).populate("toUserId");
+
+        return pendingRequests;
+    } catch (error) {
+        console.log(error);
         throw error;
     }
 };

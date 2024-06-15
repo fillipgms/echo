@@ -13,12 +13,9 @@ const AddFriendPage = () => {
                 </div>
                 <AddFriendForm />
             </div>
+            <ReceivedFriendRequests />
 
-            <Suspense fallback="loading">
-                <ReceivedFriendRequests />
-            </Suspense>
-
-            <Suspense fallback="loading">
+            <Suspense fallback="loading...">
                 <PendingFriendRequests />
             </Suspense>
         </section>

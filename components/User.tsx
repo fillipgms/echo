@@ -38,7 +38,9 @@ const User = ({
                         <span className="text-sm font-medium">{`${user.firstName} ${user.lastName}`}</span>
                     )}
                     {displayUsername && (
-                        <span className="text-xs">@{user.userName}</span>
+                        <span className="text-xs font-light">
+                            @{user.userName}
+                        </span>
                     )}
                 </div>
                 {isMessage && (

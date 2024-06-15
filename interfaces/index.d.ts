@@ -13,6 +13,7 @@ namespace models {
     }
 
     interface User {
+        _id: string;
         clerkId: string;
         firstName: string;
         lastName: string;
@@ -23,5 +24,11 @@ namespace models {
         friendsRequest: User[];
         Blocked: User[];
         createdAt: Date;
+    }
+
+    interface FriendRequest {
+        fromUserId: User[];
+        toUserId: User[];
+        status: string;
     }
 }
