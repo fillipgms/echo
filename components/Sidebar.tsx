@@ -4,16 +4,17 @@ import { UserButton, useAuth } from "@clerk/nextjs";
 import React, { useEffect, useState } from "react";
 import User from "./User";
 import { getAllFriends } from "@/lib/actions/user";
+import Link from "next/link";
 
 const Sidebar = () => {
     const { userId } = useAuth();
     const [isOpen, setIsOpen] = useState(true);
-    const [allFriends, setAllFriends] = useState([]);
+    const [allFriends, setAllFriends] = useState<models.User[]>([]);
 
     if (!userId) return;
 
     const handleClick = () => {
-        setIsOpen(!isOpen);
+        setIsOpen(false);
     };
 
     useEffect(() => {
@@ -45,12 +46,14 @@ const Sidebar = () => {
 
                 <div className="flex flex-col gap-3 py-5 px-6">
                     {allFriends.map((friend) => (
-                        <User
-                            user={friend}
-                            onClick={handleClick}
-                            className="cursor-pointer"
-                            displayUsername
-                        />
+                        <Link href={`/chat/${friend.userName}`}>
+                            <User
+                                user={friend}
+                                onClick={handleClick}
+                                className="cursor-pointer"
+                                displayUsername
+                            />
+                        </Link>
                     ))}
                 </div>
             </div>

@@ -1,7 +1,3 @@
-import React from "react";
-
-const BlockedPage = () => {
+export default function BlockedPage() {
     return <div>BlockedPage</div>;
-};
-
-export default BlockedPage;
+}

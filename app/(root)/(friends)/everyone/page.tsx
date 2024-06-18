@@ -1,7 +1,3 @@
-import React from "react";
-
-const EveryonePage = () => {
+export default function EveryonePage() {
     return <div>EveryonePage</div>;
-};
-
-export default EveryonePage;
+}

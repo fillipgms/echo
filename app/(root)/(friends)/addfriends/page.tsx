@@ -3,7 +3,7 @@ import PendingFriendRequests from "@/components/PendingFriendRequests";
 import ReceivedFriendRequests from "@/components/ReceivedFriendRequests";
 import React, { Suspense } from "react";
 
-const AddFriendPage = () => {
+export default function AddFriendPage() {
     return (
         <section className="py-4 p-6 space-y-4">
             <div className="space-y-2">
@@ -20,6 +20,4 @@ const AddFriendPage = () => {
             </Suspense>
         </section>
     );
-};
-
-export default AddFriendPage;
+}
