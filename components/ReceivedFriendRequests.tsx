@@ -61,7 +61,7 @@ const ReceivedFriendRequests = () => {
     return (
         <div>
             <div>
-                <h3 className="text-md font-semibold">
+                <h3 className="text-sm flex gap-3 items-center font-semibold  ">
                     Received - {receivedRequests.length}
                 </h3>
             </div>

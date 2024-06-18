@@ -6,8 +6,10 @@ interface FriendChatProps {
 
 export default function FriendChat({ params: { id } }: FriendChatProps) {
     return (
-        <div>
-            <h1>{id}</h1>
-        </div>
+        <section className="py-4 p-6 space-y-4">
+            <nav>
+                <h1>{id}</h1>
+            </nav>
+        </section>
     );
 }

@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import User from "./User";
 import { getAllFriends } from "@/lib/actions/user";
 import Link from "next/link";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const Sidebar = () => {
     const { userId } = useAuth();
@@ -44,18 +45,20 @@ const Sidebar = () => {
                     </ul>
                 </div>
 
-                <div className="flex flex-col gap-3 py-5 px-6">
+                <ScrollArea className="flex flex-col gap-3 py-5 px-6">
                     {allFriends.map((friend) => (
-                        <Link href={`/chat/${friend.userName}`}>
+                        <Link
+                            href={`/chat/${friend.userName}`}
+                            onClick={handleClick}
+                        >
                             <User
                                 user={friend}
-                                onClick={handleClick}
                                 className="cursor-pointer"
                                 displayUsername
                             />
                         </Link>
                     ))}
-                </div>
+                </ScrollArea>
             </div>
 
             <div className="bg-slate-300 bottom-0 absolute w-full flex items-center py-3 px-4">

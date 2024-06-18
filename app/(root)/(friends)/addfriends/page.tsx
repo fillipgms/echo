@@ -9,7 +9,9 @@ export default function AddFriendPage() {
             <div className="space-y-2">
                 <div>
                     <h2 className="text-xl font-semibold">Add Friends</h2>
-                    <p>You can add friends with their echo username</p>
+                    <p className=" font-light text-sm">
+                        You can add friends with their echo username
+                    </p>
                 </div>
                 <AddFriendForm />
             </div>
