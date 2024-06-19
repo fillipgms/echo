@@ -19,7 +19,10 @@ const PendingFriendRequests = async () => {
             </div>
             <div className="mt-4 pl-5 overflow-y-scroll space-y-3">
                 {pendingRequests.map((request) => (
-                    <User user={request.toUserId[0]} />
+                    <User
+                        user={request.toUserId[0]}
+                        key={request.toUserId[0]._id}
+                    />
                 ))}
             </div>
         </div>

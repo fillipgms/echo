@@ -32,7 +32,10 @@ const Sidebar = async () => {
                 <ScrollArea className="flex flex-col gap-3 py-5 px-6">
                     {allFriends &&
                         allFriends.map((friend) => (
-                            <Link href={`/chat/${friend.userName}`}>
+                            <Link
+                                href={`/chat/${friend.userName}`}
+                                key={friend._id}
+                            >
                                 <User
                                     user={friend}
                                     className="cursor-pointer"
