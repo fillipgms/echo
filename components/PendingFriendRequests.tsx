@@ -13,7 +13,7 @@ const PendingFriendRequests = async () => {
     return (
         <div>
             <div>
-                <h3 className="text-sm flex gap-3 items-center font-semibold  ">
+                <h3 className="text-sm font-semibold  text-slate-800">
                     Pending - {pendingRequests.length}
                 </h3>
             </div>

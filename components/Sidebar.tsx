@@ -1,43 +1,27 @@
-"use client";
 import { cn } from "@/lib/utils";
-import { UserButton, useAuth } from "@clerk/nextjs";
-import React, { useEffect, useState } from "react";
+import { UserButton } from "@clerk/nextjs";
+import React from "react";
 import User from "./User";
 import { getAllFriends } from "@/lib/actions/user";
 import Link from "next/link";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { currentUser } from "@clerk/nextjs/server";
 
-const Sidebar = () => {
-    const { userId } = useAuth();
-    const [isOpen, setIsOpen] = useState(true);
-    const [allFriends, setAllFriends] = useState<models.User[]>([]);
+const Sidebar = async () => {
+    const user = await currentUser();
 
-    if (!userId) return;
+    if (!user) return;
 
-    const handleClick = () => {
-        setIsOpen(false);
-    };
-
-    useEffect(() => {
-        const fetchFriends = async () => {
-            const response = await getAllFriends(userId);
-
-            if (!response) return;
-
-            setAllFriends(JSON.parse(response));
-        };
-        fetchFriends();
-    }, [userId]);
+    const allFriends = (await getAllFriends(user.id)) as models.User[];
 
     return (
         <aside
             className={cn(
-                "h-svh relative md:w-72 transition-all md:translate-x-0 duration-300 ease-out w-full flex flex-col z-[999]",
-                isOpen ? "translate-x-0" : "-translate-x-full"
+                "hidden md:flex h-svh w-72 transition-all duration-300 ease-out flex-col relative"
             )}
         >
             <div className="bg-slate-50 h-full">
-                <div className="mt-6 mx-5">
+                <div className="mt-8 mx-5">
                     <ul className="grid flex-1 grid-cols-3 text-sm bg-slate-200 *:py-2  *:text-center rounded-full overflow-hidden">
                         <li className="cursor-pointer">All</li>
                         <li className="cursor-pointer">Chats</li>
@@ -46,18 +30,16 @@ const Sidebar = () => {
                 </div>
 
                 <ScrollArea className="flex flex-col gap-3 py-5 px-6">
-                    {allFriends.map((friend) => (
-                        <Link
-                            href={`/chat/${friend.userName}`}
-                            onClick={handleClick}
-                        >
-                            <User
-                                user={friend}
-                                className="cursor-pointer"
-                                displayUsername
-                            />
-                        </Link>
-                    ))}
+                    {allFriends &&
+                        allFriends.map((friend) => (
+                            <Link href={`/chat/${friend.userName}`}>
+                                <User
+                                    user={friend}
+                                    className="cursor-pointer"
+                                    displayUsername
+                                />
+                            </Link>
+                        ))}
                 </ScrollArea>
             </div>
 

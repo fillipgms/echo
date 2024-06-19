@@ -65,7 +65,7 @@ export const getAllFriends = async (clerkId: string) => {
         );
         if (!user) throw new Error("Usuário não encontrado");
 
-        return JSON.stringify(user.friends);
+        return user.friends;
     } catch (error) {
         console.log(error);
     }

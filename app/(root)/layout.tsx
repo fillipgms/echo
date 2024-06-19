@@ -10,7 +10,7 @@ const layout = async ({ children }: { children: ReactNode }) => {
     }
 
     return (
-        <div className="md:grid block md:grid-cols-[18rem_1fr] relative">
+        <div className="grid md:grid-cols-[18rem_1fr] grid-cols-1 relative min-h-svh">
             <Sidebar />
             <main className="z-[1] md:static absolute md:p-4 right-0 top-0 h-full w-full ">
                 <div className="bg-slate-50 h-full w-full rounded-md">

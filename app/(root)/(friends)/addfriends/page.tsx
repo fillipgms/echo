@@ -17,7 +17,17 @@ export default function AddFriendPage() {
             </div>
             <ReceivedFriendRequests />
 
-            <Suspense fallback="loading...">
+            <Suspense
+                fallback={
+                    <div>
+                        <div>
+                            <h3 className="text-sm font-semibold  text-slate-800">
+                                Pending - 0
+                            </h3>
+                        </div>
+                    </div>
+                }
+            >
                 <PendingFriendRequests />
             </Suspense>
         </section>

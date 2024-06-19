@@ -9,6 +9,7 @@ interface UserComponentProps {
     onClick?: () => void;
     className?: string;
     user: models.User;
+    size?: string;
 }
 
 const User = ({
@@ -18,13 +19,14 @@ const User = ({
     onClick,
     className,
     user,
+    size = "size-10",
 }: UserComponentProps) => {
     return (
         <div
             className={cn(className, "flex items-center gap-2")}
             onClick={onClick}
         >
-            <div className=" size-10 rounded-full overflow-hidden">
+            <div className={cn(size, "rounded-full overflow-hidden")}>
                 <Image
                     src={user.profilePicture}
                     alt={`${user.firstName} profile pic`}
