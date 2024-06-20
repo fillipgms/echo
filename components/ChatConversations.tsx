@@ -40,26 +40,42 @@ const ChatConversations = ({
     if (!conversation) return;
 
     const groupMessages = () => {
-        let groupedMessages: { [userId: string]: string[] } = {};
+        let groupedMessages: { [userId: string]: string[] }[] = [];
+
+        let currentGroup: { [userId: string]: string[] } = {};
 
         conversation.messages.forEach((message) => {
             const userId = message.sender._id;
-            if (!groupedMessages[userId]) {
-                groupedMessages[userId] = [];
+            if (!currentGroup[userId]) {
+                if (Object.keys(currentGroup).length > 0) {
+                    groupedMessages.push(currentGroup);
+                }
+                currentGroup = {};
             }
-            groupedMessages[userId].push(message.content);
+            if (!currentGroup[userId]) {
+                currentGroup[userId] = [];
+            }
+            currentGroup[userId].push(message.content);
         });
 
-        return Object.keys(groupedMessages).map((userId) => (
-            <User
-                user={
-                    conversation.messages.find(
-                        (msg) => msg.sender._id === userId
-                    )?.sender || ({} as models.User)
-                }
-                messages={groupedMessages[userId]}
-                className="gap-4"
-            />
+        if (Object.keys(currentGroup).length > 0) {
+            groupedMessages.push(currentGroup);
+        }
+
+        return groupedMessages.map((group, index) => (
+            <div key={index} className="gap-4">
+                {Object.keys(group).map((userId) => (
+                    <User
+                        key={userId}
+                        user={
+                            conversation.messages.find(
+                                (msg) => msg.sender._id === userId
+                            )?.sender || ({} as models.User)
+                        }
+                        messages={group[userId]}
+                    />
+                ))}
+            </div>
         ));
     };
 
