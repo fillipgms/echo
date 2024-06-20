@@ -1,5 +1,7 @@
 import { getConversationByUsersIds } from "@/lib/actions/conversation";
 import React from "react";
+import User from "./User";
+import { ScrollArea } from "./ui/scroll-area";
 
 const ChatConversations = async ({
     loggedUser,
@@ -13,14 +15,24 @@ const ChatConversations = async ({
         messageTo._id
     )) as models.Conversation;
 
+    if (!conversation) {
+        return (
+            <div className="max-h-full pb-20 px-6 h-full flex justify-end flex-col"></div>
+        );
+    }
+
     return (
-        <div className="overflow-y-scroll max-h-full pb-20 px-6 h-full">
-            <div className="flex justify-end flex-col h-full gap-3">
+        <div className=" max-h-full pb-20 px-6 pt-2 h-full">
+            <ScrollArea className="flex justify-end flex-col h-full gap-3">
                 {conversation &&
                     conversation.messages.map((message) => (
-                        <p>{message.content}</p>
+                        <User
+                            key={message._id}
+                            user={message.sender}
+                            messages={[message.content]}
+                        />
                     ))}
-            </div>
+            </ScrollArea>
         </div>
     );
 };

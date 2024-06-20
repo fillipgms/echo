@@ -1,5 +1,6 @@
 "use server";
 import Conversation from "../models/conversation.model";
+import Message from "../models/message.model";
 import { connectToDB } from "../mongoose";
 
 export const getConversationByUsersIds = async (
@@ -8,6 +9,8 @@ export const getConversationByUsersIds = async (
 ) => {
     try {
         await connectToDB();
+
+        const messages = await Message.findOne();
 
         const conversation = await Conversation.findOne({
             participants: { $all: [loggedUser, conversationWith] },

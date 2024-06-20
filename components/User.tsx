@@ -23,10 +23,10 @@ const User = ({
 }: UserComponentProps) => {
     return (
         <div
-            className={cn("flex items-center gap-2", className)}
+            className={cn("flex items-center gap-2 ", className)}
             onClick={onClick}
         >
-            <div className={cn(size, "rounded-full overflow-hidden")}>
+            <div className={cn(size, "rounded-full overflow-hidden ")}>
                 <Image
                     src={user.profilePicture}
                     alt={`${user.firstName} profile pic`}
@@ -34,7 +34,7 @@ const User = ({
                     width={40}
                 />
             </div>
-            <div>
+            <div className="flex-1">
                 <div className="flex flex-col">
                     {displayName && (
                         <span className="text-sm font-medium">{`${user.firstName} ${user.lastName}`}</span>
@@ -46,7 +46,8 @@ const User = ({
                     )}
                 </div>
                 <div className={messages ? "pt-1 text-slate-700" : ""}>
-                    {messages && messages.map((message) => <p>{message}</p>)}
+                    {messages &&
+                        messages.map((message, i) => <p key={i}>{message}</p>)}
                 </div>
             </div>
         </div>
