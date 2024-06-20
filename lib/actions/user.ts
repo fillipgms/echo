@@ -57,6 +57,19 @@ export const getUserByUsername = async (username: string) => {
     }
 };
 
+export const getUserByClerkId = async (id: string) => {
+    try {
+        await connectToDB();
+        const user = await User.findOne({ clerkId: id });
+
+        if (!user) throw new Error("Usuário não encontrado");
+
+        return user;
+    } catch (error) {
+        console.log(error);
+    }
+};
+
 export const getAllFriends = async (clerkId: string) => {
     try {
         await connectToDB();

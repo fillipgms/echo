@@ -6,6 +6,9 @@ import { Form, FormField, FormItem, FormControl } from "./ui/form";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { RiSendPlane2Fill } from "react-icons/ri";
+import TextareaAutosize from "react-textarea-autosize";
+import { sendMessage } from "@/lib/actions/message";
 
 const SendMessageInput = ({
     messageFrom,
@@ -14,8 +17,8 @@ const SendMessageInput = ({
     messageFrom: string;
     messageTo: string;
 }) => {
-    const from = JSON.parse(messageFrom);
-    const to = JSON.parse(messageTo);
+    const from = JSON.parse(messageFrom) as models.User;
+    const to = JSON.parse(messageTo) as models.User;
 
     const formSchema = z.object({
         message: z.string().min(1, {
@@ -32,7 +35,9 @@ const SendMessageInput = ({
 
     const onSubmit = (values: z.infer<typeof formSchema>) => {
         startTransition(() => {
-            console.log(values);
+            sendMessage(from, to, values.message).then((data) => {
+                form.reset();
+            });
         });
     };
 
@@ -43,7 +48,7 @@ const SendMessageInput = ({
                 onSubmit={form.handleSubmit(onSubmit)}
                 onKeyDown={(e) => {
                     if (e.key === "Enter" && !e.shiftKey) {
-                        form.handleSubmit(onSubmit);
+                        form.handleSubmit(onSubmit)();
                     }
                 }}
             >
@@ -53,17 +58,23 @@ const SendMessageInput = ({
                     render={({ field }) => (
                         <FormItem>
                             <FormControl>
-                                <AutosizeTextarea
-                                    placeholder={`send message to @${to.userName}`}
-                                    {...field}
-                                />
+                                <div className="grid md:grid-cols-1 grid-cols-[1fr_min-content] gap-3 items-center">
+                                    <TextareaAutosize
+                                        className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                        {...field}
+                                        placeholder={`Envie uma mensagem para @${to.userName}`}
+                                    />
+                                    <Button
+                                        type="submit"
+                                        className="md:hidden flex items-center justify-center"
+                                    >
+                                        <RiSendPlane2Fill />
+                                    </Button>
+                                </div>
                             </FormControl>
                         </FormItem>
                     )}
                 />
-                <Button type="submit" className="w-full md:w-fit">
-                    Send Friend Request
-                </Button>
             </form>
         </Form>
     );

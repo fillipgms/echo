@@ -5,25 +5,25 @@ import React from "react";
 interface UserComponentProps {
     displayName?: boolean;
     displayUsername?: boolean;
-    isMessage?: boolean;
     onClick?: () => void;
     className?: string;
     user: models.User;
     size?: string;
+    messages?: string[];
 }
 
 const User = ({
     displayName = true,
     displayUsername,
-    isMessage,
     onClick,
     className,
     user,
     size = "size-10",
+    messages,
 }: UserComponentProps) => {
     return (
         <div
-            className={cn(className, "flex items-center gap-2")}
+            className={cn("flex items-center gap-2", className)}
             onClick={onClick}
         >
             <div className={cn(size, "rounded-full overflow-hidden")}>
@@ -45,17 +45,9 @@ const User = ({
                         </span>
                     )}
                 </div>
-                {isMessage && (
-                    <div>
-                        <p>
-                            Lorem ipsum dolor sit amet consectetur adipisicing
-                            elit. Laborum, magnam laudantium a commodi deleniti
-                            eveniet quisquam molestiae blanditiis? Delectus
-                            temporibus fuga illum quas sint incidunt illo
-                            quisquam, eligendi deleniti! Doloremque.
-                        </p>
-                    </div>
-                )}
+                <div className={messages ? "pt-1 text-slate-700" : ""}>
+                    {messages && messages.map((message) => <p>{message}</p>)}
+                </div>
             </div>
         </div>
     );

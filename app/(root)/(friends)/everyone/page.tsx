@@ -30,7 +30,7 @@ export default async function EveryonePage() {
                             <User user={friend} className="cursor-pointer" />
 
                             <div>
-                                <div className="size-8 rounded-full bg-slate-700 text-slate-100 flex items-center justify-center">
+                                <div className="size-8 rounded-full bg-slate-500 hover:bg-slate-700 text-slate-100 flex items-center justify-center">
                                     <IoChatbubbles size={"1.25rem"} />
                                 </div>
                             </div>

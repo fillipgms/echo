@@ -34,7 +34,7 @@ const ReceivedFriendRequests = () => {
         return (
             <div>
                 <div>
-                    <h3 className="text-sm font-semibold text-slate">
+                    <h3 className="text-sm font-semibold text-slate-800">
                         Received - 0
                     </h3>
                 </div>

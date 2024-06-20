@@ -31,4 +31,20 @@ namespace models {
         toUserId: User[];
         status: string;
     }
+
+    interface Message {
+        _id: string;
+        sender: User;
+        receiver: User;
+        content: string;
+        timestamp: Date;
+    }
+
+    interface Conversation {
+        _id: string;
+        participants: User[];
+        messages: Message[];
+        lastMessage: string;
+        updatedAt: Date;
+    }
 }
