@@ -14,7 +14,7 @@ const NavBar = () => {
     };
 
     return (
-        <nav className="w-full bg-slate-200 px-4 pt-4 rounded-t-md overflow-scroll">
+        <nav className="w-full bg-slate-200 px-4 pt-4 rounded-t-md overflow-x-auto">
             <ul className="flex md:gap-6 gap-2 ">
                 {navLinks.map((link, i) => {
                     const isActive =

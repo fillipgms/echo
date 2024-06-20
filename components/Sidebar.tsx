@@ -12,8 +12,6 @@ const Sidebar = async () => {
 
     if (!user) return;
 
-    const allFriends = (await getAllFriends(user.id)) as models.User[];
-
     return (
         <aside
             className={cn(
@@ -29,21 +27,7 @@ const Sidebar = async () => {
                     </ul>
                 </div>
 
-                <ScrollArea className="flex flex-col gap-3 py-5 px-6">
-                    {allFriends &&
-                        allFriends.map((friend) => (
-                            <Link
-                                href={`/chat/${friend.userName}`}
-                                key={friend._id}
-                            >
-                                <User
-                                    user={friend}
-                                    className="cursor-pointer"
-                                    displayUsername
-                                />
-                            </Link>
-                        ))}
-                </ScrollArea>
+                <ScrollArea className="flex flex-col gap-3 py-5 px-6"></ScrollArea>
             </div>
 
             <div className="bg-slate-300 bottom-0 absolute w-full flex items-center py-3 px-4">
