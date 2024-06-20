@@ -25,7 +25,7 @@ export const getConversationByUsersIds = async (
             })
             .populate("lastMessage");
 
-        return JSON.stringify(conversation);
+        return conversation;
     } catch (error) {
         console.log(error);
     }
